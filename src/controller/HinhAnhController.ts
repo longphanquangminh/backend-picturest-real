@@ -135,7 +135,7 @@ export class HinhAnhController {
         .getMany();
 
       if (createdPictures.length === 0) {
-        responseData(response, "User does not have any created pictures!", [], 400);
+        responseData(response, "User does not have any created pictures!", [], 200);
         return;
       }
       responseData(response, "Success", createdPictures, 200);

@@ -100,7 +100,7 @@ export class BinhLuanController {
         .getMany();
 
       if (comments.length === 0) {
-        responseData(response, "No comments!", [], 400);
+        responseData(response, "No comments!", [], 200);
         return;
       }
       responseData(response, "Success", comments, 200);
