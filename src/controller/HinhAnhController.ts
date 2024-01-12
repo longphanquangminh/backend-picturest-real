@@ -5,10 +5,12 @@ import { HinhAnh } from "../entity/HinhAnh";
 import { NguoiDung } from "../entity/NguoiDung";
 import { decodeToken } from "../config/jwt";
 import { validate } from "class-validator";
+import { LuuAnh } from "../entity/LuuAnh";
 
 export class HinhAnhController {
   private hinhAnhRepository = AppDataSource.getRepository(HinhAnh);
   private nguoiDungRepository = AppDataSource.getRepository(NguoiDung);
+  private luuAnhRepository = AppDataSource.getRepository(LuuAnh);
 
   async postPicture(request: Request, response: Response, next: NextFunction) {
     try {
@@ -199,7 +201,8 @@ export class HinhAnhController {
         return;
       }
       delete picture.nguoiDung.matKhau;
-      responseData(response, "Success", picture, 200);
+      const countLove = await this.luuAnhRepository.count({ where: { hinh: { hinhId: +pictureId } } });
+      responseData(response, "Success", { savedCount: countLove, data: picture }, 200);
     } catch {
       responseData(response, "Error ...", "", 500);
     }
