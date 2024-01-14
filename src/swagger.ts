@@ -158,7 +158,7 @@ export default {
             schema: {
               type: "object",
               properties: {
-                pictureId: { type: "number" },
+                pictureId: { type: "integer" },
               },
               required: ["pictureId"],
             },
