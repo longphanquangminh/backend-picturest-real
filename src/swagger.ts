@@ -146,10 +146,23 @@ export default {
         responses: {},
         tags: ["Saving"],
       },
+    },
+    "/saved": {
       post: {
         summary: "Save a picture for a user",
         parameters: [
-          { name: "id", in: "path", required: true, type: "integer" },
+          {
+            name: "body",
+            in: "body",
+            required: true,
+            schema: {
+              type: "object",
+              properties: {
+                pictureId: { type: "number" },
+              },
+              required: ["pictureId"],
+            },
+          },
           { name: "token", in: "header", required: true, type: "string" },
         ],
         responses: {},

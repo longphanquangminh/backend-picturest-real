@@ -11,64 +11,60 @@ export class LuuAnhController {
   private nguoiDungRepository = AppDataSource.getRepository(NguoiDung);
 
   async postSave(request: Request, response: Response, next: NextFunction) {
-    try {
-      const { pictureId } = request.params;
+    const { pictureId } = request.body;
 
-      const picture = await this.hinhAnhRepository.findOne({
-        where: { hinhId: +pictureId },
-      });
+    const picture = await this.hinhAnhRepository.findOne({
+      where: { hinhId: +pictureId },
+    });
 
-      if (!picture) {
-        responseData(response, "Can't find image!", "", 400);
-        return;
-      }
-
-      const { token } = request.headers;
-
-      if (!token || token == "" || token == null || token == undefined) {
-        responseData(response, "Don't have token!", "", 400);
-        return;
-      }
-
-      const accessToken = decodeToken(token);
-
-      const user = await this.nguoiDungRepository.findOne({
-        where: { nguoiDungId: accessToken.data.nguoiDungId },
-      });
-
-      if (!user) {
-        responseData(response, "Token is not valid!", "", 401);
-        return;
-      }
-
-      const checkPicture = await this.luuAnhRepository
-        .createQueryBuilder("luuAnh")
-        .where({
-          hinh: {
-            hinhId: pictureId,
-          },
-          nguoiDung: {
-            nguoiDungId: accessToken.data.nguoiDungId,
-          },
-        })
-        .getOne();
-
-      if (!checkPicture) {
-        const userSavePic = Object.assign(new LuuAnh(), {
-          ngayLuu: new Date(),
-          hinh: picture,
-          nguoiDung: user,
-        });
-
-        await this.luuAnhRepository.save(userSavePic);
-        responseData(response, "Saved image!", "", 200);
-        return;
-      }
-      await this.luuAnhRepository.remove(checkPicture);
-      responseData(response, "Remove image from save collection!", "", 200);
-    } catch {
-      responseData(response, "Error ...", "", 500);
+    if (!picture) {
+      responseData(response, "Can't find image!", "", 400);
+      return;
     }
+
+    const { token } = request.headers;
+
+    if (!token || token == "" || token == null || token == undefined) {
+      responseData(response, "Don't have token!", "", 400);
+      return;
+    }
+
+    const accessToken = decodeToken(token);
+
+    const user = await this.nguoiDungRepository.findOne({
+      where: { nguoiDungId: accessToken.data.nguoiDungId },
+    });
+
+    if (!user) {
+      responseData(response, "Token is not valid!", "", 401);
+      return;
+    }
+
+    const checkPicture = await this.luuAnhRepository
+      .createQueryBuilder("luuAnh")
+      .where({
+        hinh: {
+          hinhId: pictureId,
+        },
+        nguoiDung: {
+          nguoiDungId: accessToken.data.nguoiDungId,
+        },
+      })
+      .getOne();
+
+    if (!checkPicture) {
+      const userSavePic = Object.assign(new LuuAnh(), {
+        ngayLuu: new Date(),
+        hinh: picture,
+        nguoiDung: user,
+      });
+
+      await this.luuAnhRepository.save(userSavePic);
+      responseData(response, "Saved image!", "", 200);
+      return;
+    }
+    await this.luuAnhRepository.remove(checkPicture);
+    responseData(response, "Remove image from save collection!", "", 200);
   }
 
   async getSavedPicturesByUser(request: Request, response: Response, next: NextFunction) {
