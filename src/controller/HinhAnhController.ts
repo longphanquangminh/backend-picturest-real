@@ -173,10 +173,10 @@ export class HinhAnhController {
         .select(["hinh_anh", "nguoiDung.nguoiDungId", "nguoiDung.hoTen", "nguoiDung.anhDaiDien", "nguoiDung.tuoi", "nguoiDung.email"])
         .getManyAndCount();
 
-      if (data.length === 0) {
-        responseData(response, "Can't find image!", "", 400);
-        return;
-      }
+      // if (data.length === 0) {
+      //   responseData(response, "Can't find image!", "", 400);
+      //   return;
+      // }
       responseData(response, "Success", { count, data }, 200);
     } catch {
       responseData(response, "Error ...", "", 500);
